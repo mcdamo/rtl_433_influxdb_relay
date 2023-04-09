@@ -4,6 +4,8 @@ Relay rtl-433 messages to InfluxDB with added context labels
 
 Designed for AcuRite wireless measurements.
 
+Based off [rtl-433/examples/rtl_433_influxdb_relay.py](https://github.com/merbanan/rtl_433/blob/master/examples/rtl_433_influxdb_relay.py)
+
 ## rtl-433
 
 config
