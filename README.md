@@ -1,31 +1,39 @@
-= rtl-433-influxdb-relay
+# rtl-433-influxdb-relay
 
 Relay rtl-433 messages to InfluxDB with added context labels
 
 Designed for AcuRite wireless measurements.
 
-== rtl-433
+## rtl-433
 
 config
-`rtl_433.conf.sample`
+```
+rtl_433.conf.sample
+```
 
-=== FreeBSD daemon
+### FreeBSD daemon
 daemon:
-`rc.d/rtl-433`
+```
+rc.d/rtl-433
+```
 
 rc.conf:
 ```
 rtl_433_enable="YES"
 ```
 
-== relay
+## relay
 
 config
-`relay.ini.sample`
+```
+relay.ini.sample
+```
 
-=== FreeBSD daemon
+### FreeBSD daemon
 daemon:
-`rc.d/rtl_433_influxdb_relay`
+```
+rc.d/rtl_433_influxdb_relay
+```
 
 rc.conf:
 ```
