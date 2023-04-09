@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# PROVIDE: rtl_433
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# rtl_433_enable (bool):          Set to NO by default.
+#               Set it to YES to enable rtl_433.
+# rtl_433_user (string):          Set user that rtl_433 will run under
+#               Default is "root".
+# rtl_433_group (string):         Set group that rtl_433 will run under
+#               Default is "wheel".
+# rtl_433_args (string):          Set extra arguments to pass to rtl_433
+#               Default is "".
+
+. /etc/rc.subr
+
+name=rtl_433
+desc="RTL-433 daemon"
+rcvar=rtl_433_enable
+
+load_rc_config $name
+
+: ${rtl_433_enable:=NO}
+: ${rtl_433_user:=root}
+: ${rtl_433_group:=wheel}
+
+pidfile=/var/run/rtl_433.pid
+command=/usr/sbin/daemon
+procname="/usr/local/bin/rtl_433"
+command_args="-p ${pidfile} -t ${name} -T ${name} -S \
+    /usr/bin/env ${procname} \
+    ${rtl_433_args} 2>&1"
+
+start_precmd=rtl_433_startprecmd
+
+rtl_433_startprecmd()
+{
+    if [ ! -e ${pidfile} ]; then
+        install \
+            -o ${rtl_433_user} \
+            -g ${rtl_433_group} \
+            /dev/null ${pidfile};
+    else
+        chown ${rtl_433_user}:${rtl_433_group} ${pidfile};
+    fi
+}
+
+run_rc_command "$1"

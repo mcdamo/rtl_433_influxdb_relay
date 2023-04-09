@@ -1,0 +1,6 @@
+# acurite protocol
+protocol 40
+# output to syslog for influxdb_relay
+output syslog::1433
+# use unixtime instead of local datetime
+report_meta time:unix:usec:utc

@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# PROVIDE: rtl_433_influxdb_relay
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# rtl_433_influxdb_relay_enable (bool):          Set to NO by default.
+#               Set it to YES to enable rtl_433_influxdb_relay.
+# rtl_433_influxdb_relay_user (string):          Set user that rtl_433_influxdb_relay will run under
+#               Default is "root".
+# rtl_433_influxdb_relay_group (string):         Set group that rtl_433_influxdb_relay will run under
+#               Default is "wheel".
+# rtl_433_influxdb_relay_args (string):          Set extra arguments to pass to rtl_433_influxdb_relay
+#               Default is "".
+
+. /etc/rc.subr
+
+name=rtl_433_influxdb_relay
+desc="RTL-433 InfluxDB relay daemon"
+rcvar=rtl_433_influxdb_relay_enable
+
+load_rc_config $name
+
+: ${rtl_433_influxdb_relay_enable:=NO}
+: ${rtl_433_influxdb_relay_user:=root}
+: ${rtl_433_influxdb_relay_group:=wheel}
+
+pidfile=/var/run/rtl_433_influxdb_relay.pid
+command=/usr/sbin/daemon
+procname="/usr/local/bin/python3"
+command_args="-p ${pidfile} -t ${name} -T ${name} -S \
+    /usr/bin/env ${procname} /usr/local/etc/rtl_433_influxdb_relay/rtl_433_influxdb_relay.py \
+    ${rtl_433_influxdb_relay_args} 2>&1"
+
+start_precmd=rtl_433_influxdb_relay_startprecmd
+
+rtl_433_influxdb_relay_startprecmd()
+{
+    if [ ! -e ${pidfile} ]; then
+        install \
+            -o ${rtl_433_influxdb_relay_user} \
+            -g ${rtl_433_influxdb_relay_group} \
+            /dev/null ${pidfile};
+    else
+        chown ${rtl_433_influxdb_relay_user}:${rtl_433_influxdb_relay_group} ${pidfile};
+    fi
+}
+
+run_rc_command "$1"
